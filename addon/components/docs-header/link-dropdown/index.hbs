@@ -1,0 +1,31 @@
+<div class="dropdown">
+  <!-- Dropdown button -->
+  <button type="button" class="docs-flex docs-items-center" {{on "click" this.toggle}} {{did-insert this.attachTargetAttrib}}>
+    {{if this.selected this.selected.name "Select Addon"}} {{svg-jar "caret" height=12 width=12 class="docs-ml-auto"}}
+  </button>
+
+  <!-- Dropdown list -->
+  {{#if this.isOpen}}
+    <DocsModalDialog
+        @tetherTarget={{concat "[data-project-selection-" this.dropdownId "]"}}
+        @attachment="top left"
+        @wrapperClass="dropdown"
+        @clickOutsideToClose={{true}}
+        @onClose={{this.onClose}}
+        @targetAttachment="bottom left"
+        >
+        <div class="dropdown">
+            <ul class="docs-bg-white docs-shadow-md">
+                {{log "options --> " this.args.options}}
+            {{#each this.args.options as |opt|}}
+                <li {{on "click" (fn this.selectItem opt)}}>
+                <DocsHeader::Link @route={{opt.value}}>
+                        {{opt.name}}
+                    </DocsHeader::Link>
+                </li>
+            {{/each}}
+            </ul>
+        </div>
+    </DocsModalDialog>
+  {{/if}}
+</div>

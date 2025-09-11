@@ -1,0 +1,28 @@
+{{! BEGIN-SNIPPET docs-viewer.hbs }}
+<DocsViewer as |viewer|>
+  <viewer.nav as |nav|>
+    <nav.section @label="Introduction" />
+    <nav.item @label="What is AddonDocs?" @route="docs.index" />
+    <nav.item @label="Usage" @route="docs.usage" />
+    <nav.item @label="Quickstart" @route="docs.quickstart" />
+    <nav.item @label="Patterns" @route="docs.patterns" />
+    <nav.item @label="Build options" @route="docs.build-options" />
+    <nav.item @label="Deploying" @route="docs.deploying" />
+    <nav.item @label="Standalone Apps" @route="docs.standalone-apps" />
+    <nav.item @label="Upgrade to v5" @route="docs.upgrade-to-5" />
+
+    <nav.section @label="Components" />
+    <nav.item @label="Header" @route="docs.components.docs-header" />
+    <nav.item @label="Hero" @route="docs.components.docs-hero" />
+    <nav.item @label="Viewer" @route="docs.components.docs-viewer" />
+    <nav.item @label="Snippet" @route="docs.components.docs-snippet" />
+    <nav.item @label="Demo" @route="docs.components.docs-demo" />
+    <nav.item @label="Logo" @route="docs.components.docs-logo" />
+  </viewer.nav>
+
+  <viewer.main>
+    {{outlet}}
+  </viewer.main>
+
+</DocsViewer>
+{{! END-SNIPPET }}

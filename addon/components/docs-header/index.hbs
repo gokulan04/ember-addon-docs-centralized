@@ -1,0 +1,64 @@
+<header class="docs-shadow docs-relative docs-z-40 docs-bg-white" ...attributes>
+  <div class="docs-flex docs-items-center docs-max-w-site-container docs-mx-auto md:docs-px-2">
+
+    <DocsHeader::Link @route="index">
+      <span class="docs-leading-none docs-font-title docs-text-large-2 docs-font-normal docs-normal-case docs-block docs-mr-6">
+        {{#if this.prefix}}
+          <div class="docs-text-xxs">
+            {{this.prefix}}
+          </div>
+        {{/if}}
+        {{this.name}}
+      </span>
+    </DocsHeader::Link>
+
+    <div class="docs-flex-1 docs-flex docs-items-center docs-overflow-auto docs-scrolling-touch docs-mask-image md:docs-no-mask-image">
+        {{!-- <DocsHeader::Link @route="docs">
+          Documentation
+        </DocsHeader::Link> --}}
+      <DocsHeader::LinkDropdown @options={{@projectLinks}}/>
+
+      {{yield (hash
+        link=(component "docs-header/link")
+      )}}
+
+      <DocsHeader::SearchBox @query={{this.query}} @onInput={{set this "query"}} />
+
+      <DocsHeader::Link @onClick={{toggle "isShowingVersionSelector" this}}>
+        <span data-test-id="current-version" data-version-selector class="docs-flex docs-items-center">
+
+          {{#if (eq this.currentVersion.key this.config.latestVersionName)}}
+            {{#if this.currentVersion.tag}}
+              {{this.currentVersion.tag}}
+            {{else}}
+              Latest
+            {{/if}}
+          {{else}}
+            {{this.currentVersion.name}}
+          {{/if}}
+
+          {{svg-jar "caret" height=12 width=12}}
+        </span>
+      </DocsHeader::Link>
+
+      {{#if this.config.projectHref}}
+        <DocsHeader::Link @href={{this.config.projectHref}}>
+          <span class="docs-flex">
+            {{svg-jar "github" width=24 height=24}}
+          </span>
+        </DocsHeader::Link>
+      {{/if}}
+
+      {{!-- Something to take up space on mobile, so the scrolling nav isn't hugging the edge --}}
+      <div class="docs-h-px docs-px-3 sm:docs-hidden"></div>
+    </div>
+  </div>
+</header>
+
+{{#if this.query}}
+  <DocsHeader::SearchResults @query={{this.query}} @onClose={{set this "query" null}} @onVisit={{this.didVisitPage}} />
+{{/if}}
+
+{{#if this.isShowingVersionSelector}}
+  <DocsHeader::VersionSelector @onClose={{set this "isShowingVersionSelector" false}} />
+{{/if}}

@@ -1,0 +1,141 @@
+@use "sass:meta";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@include meta.load-css('tailwind/components/docs-brand-colors');
+@include meta.load-css('tailwind/components/docs-btn');
+@include meta.load-css('tailwind/components/docs-container');
+@include meta.load-css('tailwind/components/docs-md');
+
+@include meta.load-css('utilities/masks');
+@include meta.load-css('utilities/nudge');
+
+@include meta.load-css('components/docs-header-search-box');
+@include meta.load-css('components/docs-hero');
+@include meta.load-css('components/docs-keyboard-shortcuts');
+@include meta.load-css('components/docs-viewer-x-current-page-index');
+@include meta.load-css('components/docs-viewer-x-nav');
+@include meta.load-css('components/modal-dialog');
+
+@include meta.load-css('syntax');
+
+// Figure out how to do this in tailwind
+.docs-fill-current {
+  &,
+  & * {
+    fill: currentColor;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  @apply docs-min-h-screen;
+  @apply docs-flex;
+  @apply docs-flex-col;
+}
+
+body {
+  @apply docs-antialiased;
+  @apply docs-font-sans;
+  @apply docs-text-base;
+  @apply docs-leading-normal;
+  @apply docs-text-grey-darkest;
+
+  @apply docs-flex-1;
+  @apply docs-flex;
+  @apply docs-flex-col;
+}
+
+body > .ember-view {
+  @apply docs-flex-1;
+  @apply docs-flex;
+  @apply docs-flex-col;
+
+  @apply docs-bg-white;
+}
+
+pre {
+  margin: 0;
+}
+
+svg {
+  fill: currentColor;
+}
+
+.docs-transition {
+  transition: all 0.15s;
+}
+
+h1 > .heading-anchor:before,
+h2 > .heading-anchor:before,
+h3 > .heading-anchor:before {
+  content: '\B6';
+  cursor: pointer;
+  display: block;
+  float: left;
+  visibility: hidden;
+
+  color: #aaa;
+}
+
+h1 > .heading-anchor:hover:before,
+h2 > .heading-anchor:hover:before,
+h3 > .heading-anchor:hover:before {
+  visibility: visible;
+}
+
+h1 > a:before {
+  font-size: 0.7em;
+  width: 0.7em;
+  padding: 0.2em 0;
+  margin-left: -0.9em;
+}
+
+h2 > a:before {
+  font-size: 0.85em;
+  width: 0.8em;
+  padding: 0.1em 0em;
+  margin-left: -0.9em;
+}
+
+h3 > a:before {
+  font-size: 1em;
+  width: 0em;
+  margin-left: -0.9em;
+}
+
+table {
+  width: 100%;
+}
+
+// link Dropdown 
+
+/* Dropdown button */
+.dropdown button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 150px;
+  text-align: left;
+}
+
+.dropdown button:hover {
+  border-color: #999;
+}
+
+/* Dropdown list items */
+.dropdown ul li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.dropdown ul li:hover {
+  background: #f5f5f5;
+}
+

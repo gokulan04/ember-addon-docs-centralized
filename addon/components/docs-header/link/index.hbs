@@ -1,0 +1,47 @@
+{{#if @href}}
+
+  <a
+    href={{@href}}
+    class="docs-px-4 docs-py-5 docs-transition docs-uppercase docs-text-xxs docs-font-bold docs-text-grey-darkest docs-no-underline hover:docs-text-brand
+      {{if @push 'docs-ml-auto'}}
+      "
+    ...attributes
+  >
+    {{yield}}
+  </a>
+
+{{else if @onClick}}
+
+  <a
+    {{on "click" @onClick}}
+    href="#"
+    class="docs-px-4 docs-py-5 docs-transition docs-uppercase docs-text-xxs docs-font-bold docs-text-grey-darkest docs-no-underline hover:docs-text-brand
+      {{if @push 'docs-ml-auto'}}"
+    ...attributes
+  >
+    {{yield}}
+  </a>
+
+{{else}}
+
+  <LinkTo
+    @route={{@route}}
+    class={{concat
+      "docs-px-4 docs-py-5 docs-transition docs-uppercase docs-text-xxs
+      docs-font-bold docs-no-underline "
+      (if
+        (not (eq @route "index"))
+        (if
+          this.isActive
+          "docs-text-brand"
+          "docs-text-grey-darkest hover:docs-text-brand"
+        )
+        "docs-text-grey-darkest"
+      )
+    }}
+    ...attributes
+  >
+    {{yield}}
+  </LinkTo>
+
+{{/if}}

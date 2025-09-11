@@ -1,0 +1,70 @@
+.docs-md {
+  -webkit-font-smoothing: antialiased;
+}
+
+.docs-md__h1,
+.docs-h1,
+.docs-md__h1 a,
+.docs-h1 a {
+  @apply docs-mb-6 docs-text-grey-darkest docs-text-large-6 docs-font-extrabold docs-leading-tight docs-no-underline;
+}
+
+.docs-md__h2,
+.docs-h2,
+.docs-md__h2 a,
+.docs-h2 a {
+  @apply docs-pt-8 docs-mb-4 docs-text-grey-darkest docs-text-large-4 docs-font-bold docs-leading-tight docs-no-underline;
+}
+
+.docs-md__h3,
+.docs-h3,
+.docs-md__h3 a,
+.docs-h3 a {
+  @apply docs-pt-4 docs-mb-1 docs-text-grey-darkest docs-text-large-3 docs-font-bold docs-leading-normal docs-no-underline;
+}
+
+.docs-md p {
+  @apply docs-mb-4;
+}
+.docs-md ul {
+  @apply docs-mb-4;
+}
+.docs-md ol {
+  @apply docs-mb-4;
+}
+.docs-md li {
+  @apply docs-mb-2;
+}
+.docs-md aside {
+  @apply docs-mb-4 docs-mt-6 docs-bg-grey-lightest docs-italic docs-px-4 docs-py-3 docs-text-xs;
+}
+
+.docs-md__blockquote {
+  @apply docs-pl-4 docs-text-grey-dark docs-border-l-4;
+}
+
+/* Applied to inline code in compiled markdown */
+.docs-md :not(pre) > code {
+  @apply docs-bg-grey-lighter docs-px-1;
+}
+
+/* Applied to fenced code in compiled markdown */
+.docs-md__code {
+  @apply docs-my-8 docs-px-4 docs-py-3 docs-overflow-x-scroll docs-text-xs docs-rounded docs-subpixel-antialiased;
+
+  /* These values are copied from atom-one-dark theme, imported from highlight.js */
+  background: #282c34;
+  color: #abb2bf;
+}
+
+.docs-md__a {
+  @apply docs-text-brand docs-no-underline;
+}
+.docs-md__a:hover,
+.docs-md__a:focus {
+  @apply docs-underline;
+}
+
+.docs-md__hr {
+  @apply docs-py-0 docs-my-8 docs-h-px docs-border-b;
+}

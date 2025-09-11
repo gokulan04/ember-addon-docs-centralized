@@ -1,0 +1,13 @@
+<DocsViewer as |viewer|>
+  <viewer.nav @project={{this.model}} @root="sandbox" as |nav|>
+    <nav.section @label="The Sandbox" />
+    <nav.item @label="Welcome" @route="sandbox.index" />
+    <nav.item @label="One" @route="sandbox.docs.one" />
+    <nav.item @label="Two" @route="sandbox.docs.two" />
+  </viewer.nav>
+
+  <viewer.main>
+    {{outlet}}
+  </viewer.main>
+
+</DocsViewer>

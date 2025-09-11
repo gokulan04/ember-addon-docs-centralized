@@ -1,0 +1,24 @@
+<DocsSnippet @name="your-angle-bracket-snippet-name.hbs">
+  <div id="foo">
+    {{#my-awesome-thing
+      some=true
+      options=false
+    }}
+      <p>Something old, something new</p>
+    {{/my-awesome-thing}}
+  </div>
+</DocsSnippet>
+
+<DocsSnippet @name="your-angle-bracket-snippet-name.hbs" @data-test-id="standalone-angle-brackets" />
+
+<DocsDemo data-test-id="docs-demo-angle-brackets" as |demo|>
+  <demo.example @name="docs-demo-angle-brackets-basic.hbs">
+    <p>I am a <strong>handlebars</strong> template!</p>
+    <p>The value is: {{this.otherVal}}</p>
+    <div>
+      <Input @value={{this.otherVal}} class="docs-border" />
+    </div>
+  </demo.example>
+
+  <demo.snippet @name="docs-demo-angle-brackets-basic.hbs" />
+</DocsDemo>
