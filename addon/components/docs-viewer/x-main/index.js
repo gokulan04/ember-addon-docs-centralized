@@ -3,9 +3,9 @@ import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
 import { bind } from '@ember/runloop';
 import appFiles from 'ember-cli-addon-docs/app-files';
-import addonFiles from 'ember-cli-addon-docs/addon-files';
+// import addonFiles from 'ember-cli-addon-docs/addon-files';
 import { getOwner } from '@ember/application';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
+import { alias } from '@ember/object/computed';
 
 const tagToSize = { H2: 'xxs', H3: 'xxs' };
 const tagToIndent = { H2: '0', H3: '4' };
@@ -17,7 +17,10 @@ export default class XMain extends Component {
 
   @service docsRoutes;
 
-  @addonDocsConfig config;
+  @service addonManager;
+
+  @alias('addonManager.currentProject') 
+  currentProject;
 
   @action
   setupElement(element) {
@@ -56,49 +59,49 @@ export default class XMain extends Component {
     );
   }
 
-  get editCurrentPageUrl() {
-    let path = this.router.currentRouteName;
-    if (!path) {
-      // `router` doesn't exist for old ember versions via ember-try
-      return null;
-    }
+  // get editCurrentPageUrl() {
+  //   let path = this.router.currentRouteName;
+  //   if (!path) {
+  //     // `router` doesn't exist for old ember versions via ember-try
+  //     return null;
+  //   }
 
-    let match = this._locateFile(path);
-    if (match) {
-      let { projectHref, addonPathInRepo, docsAppPathInRepo, primaryBranch } =
-        this.config;
-      let parts = [projectHref, 'edit', primaryBranch];
-      if (match.inTree === 'addon') {
-        parts.push(addonPathInRepo);
-      } else {
-        parts.push(docsAppPathInRepo);
-      }
-      parts.push(match.file);
-      return parts.filter(Boolean).join('/');
-    }
+  //   let match = this._locateFile(path);
+  //   if (match) {
+  //     let { projectHref, addonPathInRepo, docsAppPathInRepo, primaryBranch } =
+  //       this.currentProject;
+  //     let parts = [projectHref, 'edit', primaryBranch];
+  //     if (match.inTree === 'addon') {
+  //       parts.push(addonPathInRepo);
+  //     } else {
+  //       parts.push(docsAppPathInRepo);
+  //     }
+  //     parts.push(match.file);
+  //     return parts.filter(Boolean).join('/');
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
-  _locateFile(path) {
-    path = path.replace(/\./g, '/');
-    if (path === 'docs/api/item') {
-      let { projectName } = this.config;
-      let model = getOwner(this)
-        .lookup('route:application')
-        .modelFor('docs.api.item');
-      let filename = model.file.replace(new RegExp(`^${projectName}/`), '');
-      let file = addonFiles.find((f) => f.match(filename));
-      if (file) {
-        return { file, inTree: 'addon' };
-      }
-    } else {
-      let file = appFiles
-        .filter((file) => file.match(/\.(hbs|md)$/))
-        .find((file) => file.match(path));
-      if (file) {
-        return { file, inTree: 'app' };
-      }
-    }
-  }
+  // _locateFile(path) {
+  //   path = path.replace(/\./g, '/');
+  //   if (path === 'docs/api/item') {
+  //     let { projectName } = this.currentProject;
+  //     let model = getOwner(this)
+  //       .lookup('route:application')
+  //       .modelFor('docs.api.item');
+  //     let filename = model.file.replace(new RegExp(`^${projectName}/`), '');
+  //     let file = addonFiles.find((f) => f.match(filename));
+  //     if (file) {
+  //       return { file, inTree: 'addon' };
+  //     }
+  //   } else {
+  //     let file = appFiles
+  //       .filter((file) => file.match(/\.(hbs|md)$/))
+  //       .find((file) => file.match(path));
+  //     if (file) {
+  //       return { file, inTree: 'app' };
+  //     }
+  //   }
+  // }
 }

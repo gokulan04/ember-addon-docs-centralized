@@ -48,6 +48,21 @@ Router.map(function () {
       this.route('two');
     });
   });
+  
+  this.route('droid-simple-tree', function(){
+    apiRoute(this);
+    docsRoute(this, function() {
+      this.route('one', function() {
+        
+      });
+    });
+  })
+  this.route('droid-common-utils-helpers', function(){
+    apiRoute(this);
+  })
+  this.route('ember-echarts', function(){
+    apiRoute(this);
+  })
 
   this.route('not-found', { path: '/*path' });
 });

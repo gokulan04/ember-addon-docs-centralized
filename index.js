@@ -8,6 +8,7 @@ const Funnel = require('broccoli-funnel');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app'); // eslint-disable-line n/no-unpublished-require
 const Plugin = require('broccoli-plugin');
 const walkSync = require('walk-sync');
+const stringUtil = require('ember-cli-string-utils');
 
 const LATEST_VERSION_NAME = '-latest';
 const styleDir = path.join(__dirname, 'addon', 'styles');
@@ -50,15 +51,9 @@ module.exports = {
       },
     },
   },
-
   config(env, baseConfig) {
-    let pkg = this.parent.pkg;
-    if (this._documentingAddonAt()) {
-      pkg = require(path.join(this._documentingAddonAt(), 'package.json'));
-    }
+    let documentingAddons = this._documentingAddonAt() || {}; // addon project structure {name: path}
 
-    let repo = pkg.repository;
-    let info = require('hosted-git-info').fromUrl(repo.url || repo);
     let userConfig = this._readUserConfig();
 
     let docsAppPathInRepo = path.relative(
@@ -69,19 +64,22 @@ module.exports = {
       ),
     );
 
-    let addonPathInRepo = this._documentingAddonAt()
-      ? path.relative(
-          this._getRepoRoot(),
-          path.join(this._documentingAddonAt(), this._addonSrcFolder()),
-        )
-      : path.relative(
-          this._getRepoRoot(),
-          path.join(this.project.root, this._addonSrcFolder()),
-        );
+    // Build projects object keyed by package name
+    let projects = {};
 
-    let config = {
-      'ember-cli-addon-docs': {
-        projectName: pkg.name,
+    Object.entries(documentingAddons).forEach(([addonName, addonPath]) => {
+      let pkg = require(path.join(addonPath, 'package.json'));
+      let repo = pkg.repository;
+      let info = require('hosted-git-info').fromUrl(repo.url || repo);
+
+      let addonPathInRepo = path.relative(
+        this._getRepoRoot(),
+        path.join(addonPath, this._addonSrcFolder(addonPath)),
+      );
+
+      projects[addonName] = {
+        projectName: removeScope(pkg.name),
+        projectDisplayName: dedasherize(removeScope(pkg.name)),
         projectDescription: pkg.description,
         projectTag: pkg.version,
         projectHref: info && info.browse(),
@@ -92,6 +90,40 @@ module.exports = {
         deployVersion: 'ADDON_DOCS_DEPLOY_VERSION',
         searchTokenSeparator: '\\s+',
         showImportPaths: true,
+    };
+  });
+
+  // // If no documenting addons, fallback to main project
+  // if (Object.keys(projects).length === 0) {
+  //   let pkg = this.parent.pkg;
+  //   let repo = pkg.repository;
+  //   let info = require('hosted-git-info').fromUrl(repo.url || repo);
+
+  //   let addonPathInRepo = path.relative(
+  //     this._getRepoRoot(),
+  //     path.join(this.project.root, this._addonSrcFolder(this.project.root)),
+  //   );
+
+  //   projects[pkg.name] = {
+  //     projectName: pkg.name,
+  //     projectDisplayName: dedasherize(pkg.name),
+  //     projectDescription: pkg.description,
+  //     projectTag: pkg.version,
+  //     projectHref: info && info.browse(),
+  //     docsAppPathInRepo,
+  //     addonPathInRepo,
+  //     primaryBranch: userConfig.getPrimaryBranch(),
+  //     latestVersionName: LATEST_VERSION_NAME,
+  //     deployVersion: 'ADDON_DOCS_DEPLOY_VERSION',
+  //     searchTokenSeparator: '\\s+',
+  //     showImportPaths: true,
+  //   };
+  // }
+
+  // Final config
+  let config = {
+    'ember-cli-addon-docs': {
+      projects, // object keyed by addon name
       },
     };
 
@@ -217,13 +249,25 @@ module.exports = {
 
   treeForAddon(tree) {
     let dummyAppFiles = new FindDummyAppFiles([this.app.trees.app]);
-    let addonToDocument = this._documentingAddon();
-    let addonFiles = new FindAddonFiles(
-      [path.join(addonToDocument.root, this._addonSrcFolder())].filter((dir) =>
-        fs.existsSync(dir),
-      ),
-    );
-    return this._super(new MergeTrees([tree, dummyAppFiles, addonFiles]));
+    let documentingAddons = this._getAllDocumentingAddon(); // { addonName: addon }
+
+    let addonFiles = [];
+
+    if (documentingAddons && Object.keys(documentingAddons).length > 0) {
+      Object.entries(documentingAddons).forEach(([addonName, addon]) => {
+        console.log(addonName)
+        let addonSrcDir = path.join(addon.root, this._addonSrcFolder(addon.root));
+        if (fs.existsSync(addonSrcDir)) {
+          addonFiles.push(
+            new Funnel(new FindAddonFiles([addonSrcDir]), {
+              destDir: `addon-docs/${addonName}`, // namespace by addon name
+            })
+          );
+        }
+      });
+    }
+
+    return this._super(new MergeTrees([tree, dummyAppFiles, ...addonFiles]));
   },
 
   treeForVendor(vendor) {
@@ -257,66 +301,72 @@ module.exports = {
     return this._appTree;
   },
 
-  treeForPublic(tree) {
-    let addonToDocument = this._documentingAddon();
-    if (!addonToDocument) {
-      return tree;
-    }
+ treeForPublic(tree) {
+  let documentingAddons = this._getAllDocumentingAddon(); // { addonName: addonPath }
+  if (!documentingAddons || Object.keys(documentingAddons).length === 0) {
+    return tree;
+  }
 
-    let ContentExtractor = require('./lib/preprocessors/hbs-content-extractor');
-    let appTree = this._treeFor('app');
-    const contentExtractor = new ContentExtractor(this.getBroccoliBridge());
-    contentExtractor.toTree(appTree);
+  let ContentExtractor = require('./lib/preprocessors/hbs-content-extractor');
+  let appTree = this._treeFor('app');
+  const contentExtractor = new ContentExtractor(this.getBroccoliBridge());
+  contentExtractor.toTree(appTree);
 
-    let PluginRegistry = require('./lib/models/plugin-registry');
-    let DocsCompiler = require('./lib/broccoli/docs-compiler');
-    let SearchIndexer = require('./lib/broccoli/search-indexer');
+  let PluginRegistry = require('./lib/models/plugin-registry');
+  let DocsCompiler = require('./lib/broccoli/docs-compiler');
+  let SearchIndexer = require('./lib/broccoli/search-indexer');
 
-    let project = this.project;
-    let docsTrees = [];
-    this.addonOptions.projects.main =
-      this.addonOptions.projects.main ||
-      generateDefaultProject(addonToDocument, this._addonSrcFolder());
+  let project = this.project;
+  let docsTrees = [];
+  let searchIndexTrees = [];
 
-    for (let projectName in this.addonOptions.projects) {
-      let addonSourceTree = this.addonOptions.projects[projectName];
+  this.addonOptions.projects = this.addonOptions.projects || {};
 
-      let pluginRegistry = new PluginRegistry(project);
-
-      let docsGenerators = pluginRegistry.createDocsGenerators(
-        addonSourceTree,
-        {
-          destDir: 'docs',
-          project,
-          parentAddon: addonToDocument,
-        },
-      );
-
-      docsTrees.push(
-        new DocsCompiler(docsGenerators, {
-          name: projectName === 'main' ? addonToDocument.name : projectName,
-          project,
-        }),
+  Object.entries(documentingAddons).forEach(([addonName, addon]) => {
+    if (!this.addonOptions.projects[addonName]) {
+      this.addonOptions.projects[addonName] = generateDefaultProject(
+        addon,
+        this._addonSrcFolder(addon.root)
       );
     }
 
-    let docsTree = new MergeTrees(docsTrees, { annotation: 'docsTrees' });
+    let addonSourceTree = this.addonOptions.projects[addonName];
+    let pluginRegistry = new PluginRegistry(project);
 
-    let templateContentsTree =
-      this.getBroccoliBridge().placeholderFor('template-contents');
+    let docsGenerators = pluginRegistry.createDocsGenerators(addonSourceTree, {
+      destDir: 'docs',
+      project: addon,
+      parentAddon: { name: addonName, root: addon.root },
+    });
+
+    let docsTree = new DocsCompiler(docsGenerators, {
+      name: removeScope(addonName),
+      project: addon,
+    });
+
+    docsTrees.push(docsTree);
+
+    // Each addon gets its own search index file
+    let templateContentsTree = this.getBroccoliBridge().placeholderFor('template-contents');
+    let flattenedAddonName = removeScope(addonName);
     let searchIndexTree = new SearchIndexer(
       new MergeTrees([docsTree, templateContentsTree], {
-        annotation: 'SearchIndexer',
+        annotation: `SearchIndexer for ${flattenedAddonName}`,
       }),
       {
-        outputFile: 'ember-cli-addon-docs/search-index.json',
+        outputFile: `ember-cli-addon-docs/search-index-${flattenedAddonName}.json`,
         config: this.project.config(EmberApp.env()),
-      },
+      }
     );
-    return new MergeTrees([this._super(tree), searchIndexTree, docsTree], {
-      annotation: 'this._super(tree), docsTree',
-    });
-  },
+
+    searchIndexTrees.push(searchIndexTree);
+  });
+
+  return new MergeTrees(
+    [this._super(tree), ...docsTrees, ...searchIndexTrees],
+    { annotation: 'this._super(tree), docsTrees, searchIndexTrees' }
+  );
+},
 
   _lunrTree() {
     return new Funnel(path.dirname(require.resolve('lunr/package.json')), {
@@ -347,12 +397,15 @@ module.exports = {
     if (this._cachedDocumentingAddonAt === undefined && this.app) {
       if (
         this.app.options['ember-cli-addon-docs'] &&
-        this.app.options['ember-cli-addon-docs'].documentingAddonAt
+        this.app.options['ember-cli-addon-docs'].documentingAddonsAt
       ) {
-        this._cachedDocumentingAddonAt = path.resolve(
-          this.project.root,
-          this.app.options['ember-cli-addon-docs'].documentingAddonAt,
-        );
+        this._cachedDocumentingAddonAt = [];
+        this.app.options['ember-cli-addon-docs'].documentingAddonsAt.forEach(addonPath => {
+          let resolvedPath = path.resolve(this.project.root, addonPath);
+          let pkgPath = path.join(resolvedPath, 'package.json');
+          let pkg = require(pkgPath);
+          this._cachedDocumentingAddonAt[pkg.name] = resolvedPath;
+        });
       } else {
         this._cachedDocumentingAddonAt = null;
       }
@@ -361,7 +414,7 @@ module.exports = {
   },
 
   // returns path of the addon source code relative to the addon root folder.
-  _addonSrcFolder() {
+  _addonSrcFolder(documentingAddonAt="") {
     if (this._cachedAddonSrcFolder === undefined) {
       if (
         this.app &&
@@ -370,34 +423,43 @@ module.exports = {
       ) {
         this._cachedAddonSrcFolder =
           this.app.options['ember-cli-addon-docs'].addonSrcFolder;
-      } else {
-        let pkg = this.parent.pkg;
-        if (this._documentingAddonAt()) {
-          pkg = require(path.join(this._documentingAddonAt(), 'package.json'));
-        }
+      } else if(documentingAddonAt){
+        let pkg = require(path.join(documentingAddonAt, 'package.json'));
         this._cachedAddonSrcFolder =
-          pkg['ember-addon'].version === 2 ? 'src' : 'addon';
+          pkg['ember-addon'].version === 2 ? 'src' : 'dist'; // pointing to dist as we refer v2 addon
       }
     }
     return this._cachedAddonSrcFolder;
   },
 
-  _documentingAddon() {
-    let addon;
-    if (this._documentingAddonAt()) {
-      addon = this.project.addons.find(
-        (a) => a.root === this._documentingAddonAt(),
-      );
+  _getAllDocumentingAddon(){
+    let addonPaths = this._documentingAddonAt();
+    let addonToDocument = {};
+    for (let addons in addonPaths){
+      addonToDocument[addons] = this._documentingAddon(addonPaths[addons]);
+    }
+    return addonToDocument;
+  },
+  
+_documentingAddon(documentingAddonAt) {
+
+
+  let addons = "";
+  if (documentingAddonAt) {
+      let addon = this.project.addons.find((a) => a.root === documentingAddonAt);
       if (!addon) {
         throw new Error(
-          `You set documentingAddonAt to point at ${this._documentingAddonAt()} but that addon does not appear to be present in this app.`,
+          `You set documentingAddonAt to point at ${documentingAddonAt} but that addon does not appear to be present in this app.`,
         );
       }
-    } else {
-      addon = this.parent.findAddonByName(this.parent.name());
-    }
-    return addon;
-  },
+      return addon;
+  } else {
+    // fallback: use parent project as single addon
+    addons = this.parent.findAddonByName(this.parent.name());
+  }
+
+  return addons;
+}
 };
 
 function findImporter(addon) {
@@ -423,7 +485,6 @@ function generateDefaultProject(parentAddon, addonSrcFolder) {
       include: ['package.json', 'README.md'],
     }),
   ];
-
   let addonTreePath = path.join(parentAddon.root, addonSrcFolder);
   let testSupportPath = path.join(
     parentAddon.root,
@@ -447,6 +508,23 @@ function generateDefaultProject(parentAddon, addonSrcFolder) {
   }
 
   return new MergeTrees(includeFunnels);
+}
+
+function dedasherize(name){
+  if (!name) return '';
+
+  return name
+    .split('-')                    
+    .map(part => stringUtil.capitalize(part.charAt(0)) + part.slice(1)) 
+    .join(' ');      
+}
+
+function removeScope(packageName) { // @admindroid/droid-addon --> droid-addon
+  // Check if the package name starts with a scope
+  if (packageName.startsWith('@')) {
+      return packageName.split('/')[1];
+  }
+  return packageName;
 }
 
 class FindDummyAppFiles extends Plugin {

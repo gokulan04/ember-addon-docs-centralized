@@ -4,7 +4,8 @@ import {
   unprefixedAddonName,
 } from 'ember-cli-addon-docs/utils/computed';
 import { classify } from '@ember/string';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
+import { inject as service } from '@ember/service';
+import { alias } from '@ember/object/computed';
 
 /**
   A component that renders a hero banner. Useful for your docs site's homepage.
@@ -21,7 +22,10 @@ import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
   @public
 */
 export default class DocsHeroComponent extends Component {
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   /**
     The prefix to show, typically of: 'Ember', 'EmberCLI', or 'EmberData'
@@ -30,7 +34,7 @@ export default class DocsHeroComponent extends Component {
     @type String
   */
   get prefix() {
-    return this.args.prefix ?? addonPrefix(this.config.projectName);
+    return this.args.prefix ?? addonPrefix(this.currentProject.projectName);
   }
 
   /**
@@ -42,7 +46,7 @@ export default class DocsHeroComponent extends Component {
   get heading() {
     return (
       this.args.heading ??
-      classify(unprefixedAddonName(this.config.projectName))
+      classify(unprefixedAddonName(this.currentProject.projectName))
     );
   }
 
@@ -53,6 +57,6 @@ export default class DocsHeroComponent extends Component {
     @type String
   */
   get byline() {
-    return this.args.byline ?? this.config.projectDescription;
+    return this.args.byline ?? this.currentProject.projectDescription;
   }
 }

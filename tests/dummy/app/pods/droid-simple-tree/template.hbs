@@ -1,0 +1,11 @@
+<DocsViewer as |viewer|>
+  <viewer.nav @project={{this.model}} @root="droid-simple-tree" as |nav|>
+    <nav.section @label="The ClipBoard" />
+    <nav.item @label="Welcome" @route="droid-simple-tree.index" />
+  </viewer.nav>
+
+  <viewer.main>
+    {{outlet}}
+  </viewer.main>
+
+</DocsViewer>

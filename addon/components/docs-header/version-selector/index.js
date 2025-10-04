@@ -1,15 +1,17 @@
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
-import { reads } from '@ember/object/computed';
+import { alias, reads } from '@ember/object/computed';
 import { action } from '@ember/object';
 import { A } from '@ember/array';
 import { cached } from 'tracked-toolbox';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
 
 export default class VersionSelector extends Component {
   @service projectVersion;
 
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   @reads('projectVersion.currentVersion')
   currentVersion;
@@ -18,10 +20,10 @@ export default class VersionSelector extends Component {
   get sortedVersions() {
     let versions = A(this.projectVersion.versions);
     let latest = versions.find(
-      (version) => version.key === this.config.latestVersionName,
+      (version) => version.key === this.currentProject.latestVersionName,
     );
     let primary = versions.find(
-      (version) => version.key === this.config.primaryBranch,
+      (version) => version.key === this.currentProject.primaryBranch,
     );
     let otherTags = versions
       .reject((v) => [latest, primary].includes(v))

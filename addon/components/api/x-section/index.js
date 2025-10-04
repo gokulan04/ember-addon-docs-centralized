@@ -1,12 +1,15 @@
 import Component from '@glimmer/component';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
-
+import { inject as service } from '@ember/service';
+import { alias } from '@ember/object/computed';
 /**
   @class Api/XSection
   @hide
 */
 export default class XSection extends Component {
-  @addonDocsConfig config;
+  @service addonManager;
+
+  @alias('addonManager.currentProject')
+  currentProject;
 
   /**
    * Params shouldn't be displayed when there are no descriptions and no subparams,

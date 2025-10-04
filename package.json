@@ -30,6 +30,9 @@
     "test:test-apps": "cd test-apps/new-addon && pnpm test"
   },
   "dependencies": {
+    "@admindroid/droid-common-utils-helpers": "^0.0.1-beta.1",
+    "@admindroid/droid-simple-tree": "^0.0.1-beta.3",
+    "@admindroid/ember-echarts": "^0.0.1-beta.1",
     "@csstools/postcss-sass": "^5.1.1",
     "@ember/render-modifiers": "^2.1.0",
     "@ember/test-waiters": "^3.1.0",
@@ -58,6 +61,7 @@
     "ember-code-snippet": "^3.0.0",
     "ember-composable-helpers": "^5.0.0",
     "ember-concurrency": "^3.1.1",
+    "ember-echarts": "^0.1.1",
     "ember-keyboard": "^9.0.1",
     "ember-modal-dialog": "^4.1.4",
     "ember-router-generator": "^2.0.0",

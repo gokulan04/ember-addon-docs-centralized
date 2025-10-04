@@ -3,9 +3,8 @@ import { tracked } from '@glimmer/tracking';
 import { classify } from '@ember/string';
 import { addonPrefix } from 'ember-cli-addon-docs/utils/computed';
 import { inject as service } from '@ember/service';
-import { reads } from '@ember/object/computed';
+import { reads, alias } from '@ember/object/computed';
 import { action } from '@ember/object';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
 
 /**
   Render a header showing a link to your documentation, your project logo, a
@@ -30,7 +29,10 @@ import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
 export default class DocsHeader extends Component {
   @service projectVersion;
 
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   @tracked query;
 
@@ -53,7 +55,7 @@ export default class DocsHeader extends Component {
     @type String?
   */
   get prefix() {
-    return this.args.prefix ?? addonPrefix(this.config.projectName);
+    return this.args.prefix ?? addonPrefix(this.currentProject.projectName);
   }
 
   /**
@@ -72,7 +74,7 @@ export default class DocsHeader extends Component {
     if (this.args.name) {
       return this.args.name;
     } else {
-      let name = this.config.projectName;
+      let name = this.currentProject.projectName;
       name = name.replace('ember-data-', '');
       name = name.replace('ember-cli-', '');
       name = name.replace('ember-', '');
