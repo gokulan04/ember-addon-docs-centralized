@@ -1,0 +1,11 @@
+<DocsViewer as |viewer|>
+  <viewer.nav @project={{this.model}} @root="ember-tether" as |nav|>
+    <nav.section @label="Ember Tether" />
+    <nav.item @label="Welcome" @route="ember-tether.index" />
+  </viewer.nav>
+
+  <viewer.main>
+    {{outlet}}
+  </viewer.main>
+
+</DocsViewer>

@@ -3,8 +3,7 @@ import lunr from 'lunr';
 import { enqueueTask } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
 import {
-  getAddonDocsConfig,
-  getRootURL,
+  getRootURL
 } from 'ember-cli-addon-docs/-private/config';
 import { alias } from '@ember/object/computed';
 const { Index, Query } = lunr;

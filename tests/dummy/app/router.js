@@ -63,6 +63,10 @@ Router.map(function () {
   this.route('ember-echarts', function(){
     apiRoute(this);
   })
+  
+  this.route('ember-tether', function(){
+    apiRoute(this);
+  })
 
   this.route('not-found', { path: '/*path' });
 });
