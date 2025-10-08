@@ -68,6 +68,7 @@ module.exports = {
     let projects = {};
 
     Object.entries(documentingAddons).forEach(([addonName, addonPath]) => {
+      addonName = removeScope(addonName);
       let pkg = require(path.join(addonPath, 'package.json'));
       let repo = pkg.repository;
       let info = require('hosted-git-info').fromUrl(repo.url || repo);
@@ -78,8 +79,8 @@ module.exports = {
       );
 
       projects[addonName] = {
-        projectName: removeScope(pkg.name),
-        projectDisplayName: dedasherize(removeScope(pkg.name)),
+        projectName: addonName,
+        projectDisplayName: dedasherize(addonName),
         projectDescription: pkg.description,
         projectTag: pkg.version,
         projectHref: info && info.browse(),
@@ -255,7 +256,6 @@ module.exports = {
 
     if (documentingAddons && Object.keys(documentingAddons).length > 0) {
       Object.entries(documentingAddons).forEach(([addonName, addon]) => {
-        console.log(addonName)
         let addonSrcDir = path.join(addon.root, this._addonSrcFolder(addon.root));
         if (fs.existsSync(addonSrcDir)) {
           addonFiles.push(
@@ -282,6 +282,11 @@ module.exports = {
     return this._broccoliBridge;
   },
 
+  /**
+   * Reads Markdown templates
+   * compiles them into .hbs
+   * 
+   */
   treeForApp(tree) {
     if (!this._appTree) {
       let { app, templates } = this.app.trees;
@@ -301,6 +306,11 @@ module.exports = {
     return this._appTree;
   },
 
+  /**
+   * Build and compile the actual documentation content 
+   * and search index into /public.
+   * 
+   */
  treeForPublic(tree) {
   let documentingAddons = this._getAllDocumentingAddon(); // { addonName: addonPath }
   if (!documentingAddons || Object.keys(documentingAddons).length === 0) {
@@ -323,13 +333,13 @@ module.exports = {
   this.addonOptions.projects = this.addonOptions.projects || {};
 
   Object.entries(documentingAddons).forEach(([addonName, addon]) => {
+    addonName = removeScope(addonName);
     if (!this.addonOptions.projects[addonName]) {
       this.addonOptions.projects[addonName] = generateDefaultProject(
         addon,
         this._addonSrcFolder(addon.root)
       );
     }
-
     let addonSourceTree = this.addonOptions.projects[addonName];
     let pluginRegistry = new PluginRegistry(project);
 
@@ -340,7 +350,7 @@ module.exports = {
     });
 
     let docsTree = new DocsCompiler(docsGenerators, {
-      name: removeScope(addonName),
+      name: addonName,
       project: addon,
     });
 
@@ -348,14 +358,13 @@ module.exports = {
 
     // Each addon gets its own search index file
     let templateContentsTree = this.getBroccoliBridge().placeholderFor('template-contents');
-    let flattenedAddonName = removeScope(addonName);
     let searchIndexTree = new SearchIndexer(
       new MergeTrees([docsTree, templateContentsTree], {
-        annotation: `SearchIndexer for ${flattenedAddonName}`,
+        annotation: `SearchIndexer for ${addonName}`,
       }),
       {
-        outputFile: `ember-cli-addon-docs/search-index-${flattenedAddonName}.json`,
-        config: this.project.config(EmberApp.env()),
+        outputFile: `ember-cli-addon-docs/search-index-${addonName}.json`,
+        config: this.project.config(EmberApp.env())
       }
     );
 

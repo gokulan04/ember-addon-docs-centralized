@@ -3,8 +3,11 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
+import { inject as service } from '@ember/service';
 
 export default class DropdownMenu extends Component {
+  @service addonManager;
+  
   @tracked isOpen = false;
   @tracked selected;
   @tracked dropdownId = guidFor(this);
@@ -35,7 +38,7 @@ export default class DropdownMenu extends Component {
   @action selectItem(item) {
     this.selected = item;
     this.isOpen = false;
-
+    this.addonManager.setCurrentProject(item.projectName);
     if (this.args.onChange) {
       this.args.onChange(item);
     }
