@@ -425,7 +425,7 @@ module.exports = {
 
   // returns path of the addon source code relative to the addon root folder.
   _addonSrcFolder(documentingAddonAt="") {
-    if (this._cachedAddonSrcFolder === undefined) {
+    // if (this._cachedAddonSrcFolder === undefined) {  // no need cache here as addonsrcFolder may differ for v1 and v2 addons
       if (
         this.app &&
         this.app.options['ember-cli-addon-docs'] &&
@@ -438,7 +438,7 @@ module.exports = {
         this._cachedAddonSrcFolder =
           pkg['ember-addon'].version === 2 ? 'dist' : 'addon'; // pointing to dist as we refer v2 addon
       }
-    }
+    // }
     return this._cachedAddonSrcFolder;
   },
 
