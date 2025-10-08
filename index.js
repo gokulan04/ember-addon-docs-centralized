@@ -364,7 +364,8 @@ module.exports = {
       }),
       {
         outputFile: `ember-cli-addon-docs/search-index-${addonName}.json`,
-        config: this.project.config(EmberApp.env())
+        config: this.project.config(EmberApp.env()),
+        projectName: addonName
       }
     );
 
