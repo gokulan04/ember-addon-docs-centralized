@@ -51,10 +51,8 @@ Router.map(function () {
   
   this.route('droid-simple-tree', function(){
     apiRoute(this);
-    docsRoute(this, function() {
-      this.route('one', function() {
-        
-      });
+    this.route('intro', function() {
+      
     });
   })
   this.route('droid-common-utils-helpers', function(){
