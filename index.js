@@ -436,7 +436,7 @@ module.exports = {
       } else if(documentingAddonAt){
         let pkg = require(path.join(documentingAddonAt, 'package.json'));
         this._cachedAddonSrcFolder =
-          pkg['ember-addon'].version === 2 ? 'src' : 'dist'; // pointing to dist as we refer v2 addon
+          pkg['ember-addon'].version === 2 ? 'dist' : 'addon'; // pointing to dist as we refer v2 addon
       }
     }
     return this._cachedAddonSrcFolder;
