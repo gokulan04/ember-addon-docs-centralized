@@ -24,7 +24,7 @@
 
       <DocsHeader::SearchBox @query={{this.query}} @onInput={{set this "query"}} />
 
-      <DocsHeader::Link @onClick={{toggle "isShowingVersionSelector" this}}>
+      {{!-- <DocsHeader::Link @onClick={{toggle "isShowingVersionSelector" this}}>
         <span data-test-id="current-version" data-version-selector class="docs-flex docs-items-center">
 
           {{#if (eq this.currentVersion.key this.config.latestVersionName)}}
@@ -39,7 +39,7 @@
 
           {{svg-jar "caret" height=12 width=12}}
         </span>
-      </DocsHeader::Link>
+      </DocsHeader::Link> --}}
 
       {{#if this.config.projectHref}}
         <DocsHeader::Link @href={{this.config.projectHref}}>
