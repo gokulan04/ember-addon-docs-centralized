@@ -10,10 +10,12 @@ export default class AddonManagerService extends Service {
     
     constructor() {
         super(...arguments);
-        let parentRouteName = this.router.currentRoute.parent.name;
-        let currentProjectName = parentRouteName == "application" ? this.config.projects[Object.keys(this.config.projects)[0]].projectName : parentRouteName;
+        let addonRouteName = this.router.currentRoute.parent.name.split('.')[0];
+        let currentProjectName = addonRouteName == "application" ? this.config.projects[Object.keys(this.config.projects)[0]].projectName : addonRouteName;
         this.setCurrentProject(currentProjectName);
-        this.router.on('routeDidChange', (transition) => this.setCurrentProject(transition.to.parent.name));
+        this.router.on('routeDidChange', (transition) => {
+            this.setCurrentProject(transition.to.parent.name.split('.')[0])
+        });
     }
     
     get currentProject(){
