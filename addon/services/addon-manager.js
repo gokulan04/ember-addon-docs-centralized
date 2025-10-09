@@ -20,6 +20,10 @@ export default class AddonManagerService extends Service {
         return this.config.projects[this.currentProjectName];
     }
     
+    get hostProjectInfo(){
+        return this.config.hostProjectInfo;
+    }
+    
     setCurrentProject(currentProjectName){
         this.currentProjectName = currentProjectName;
     }

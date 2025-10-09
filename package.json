@@ -1,7 +1,7 @@
 {
   "name": "ember-cli-addon-docs",
   "version": "8.0.8",
-  "description": "Easy, beautiful docs for your OSS Ember addons",
+  "description": "Central hub for Droid Addon documentation.",
   "keywords": [
     "ember-addon",
     "ember-cli-deploy-plugin"

@@ -31,8 +31,8 @@ export default class DocsHeader extends Component {
 
   @service addonManager;
   
-  @alias('addonManager.currentProject')
-  currentProject;
+  @alias('addonManager.hostProjectInfo')
+  hostProjectInfo;
 
   @tracked query;
 
@@ -55,7 +55,7 @@ export default class DocsHeader extends Component {
     @type String?
   */
   get prefix() {
-    return this.args.prefix ?? addonPrefix(this.currentProject.projectName);
+    return this.args.prefix ?? addonPrefix(this.hostProjectInfo.name);
   }
 
   /**
@@ -74,7 +74,7 @@ export default class DocsHeader extends Component {
     if (this.args.name) {
       return this.args.name;
     } else {
-      let name = this.currentProject.projectName;
+      let name = this.hostProjectInfo.name;
       name = name.replace('ember-data-', '');
       name = name.replace('ember-cli-', '');
       name = name.replace('ember-', '');

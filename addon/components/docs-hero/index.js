@@ -24,8 +24,8 @@ import { alias } from '@ember/object/computed';
 export default class DocsHeroComponent extends Component {
   @service addonManager;
   
-  @alias('addonManager.currentProject')
-  currentProject;
+  @alias('addonManager.config.hostProjectInfo')
+  hostProjectInfo;
 
   /**
     The prefix to show, typically of: 'Ember', 'EmberCLI', or 'EmberData'
@@ -34,7 +34,7 @@ export default class DocsHeroComponent extends Component {
     @type String
   */
   get prefix() {
-    return this.args.prefix ?? addonPrefix(this.currentProject.projectName);
+    return this.args.prefix ?? addonPrefix(this.hostProjectInfo.name);
   }
 
   /**
@@ -46,7 +46,7 @@ export default class DocsHeroComponent extends Component {
   get heading() {
     return (
       this.args.heading ??
-      classify(unprefixedAddonName(this.currentProject.projectName))
+      classify(unprefixedAddonName(this.hostProjectInfo.name))
     );
   }
 
@@ -57,6 +57,6 @@ export default class DocsHeroComponent extends Component {
     @type String
   */
   get byline() {
-    return this.args.byline ?? this.currentProject.projectDescription;
+    return this.args.byline ?? this.hostProjectInfo.description;
   }
 }

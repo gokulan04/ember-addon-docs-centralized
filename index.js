@@ -125,7 +125,8 @@ module.exports = {
   let config = {
     'ember-cli-addon-docs': {
       projects, // object keyed by addon name
-      },
+      hostProjectInfo:  this.project._packageInfo.pkg
+      }
     };
 
     let updatedConfig = Object.assign({}, baseConfig, config);
