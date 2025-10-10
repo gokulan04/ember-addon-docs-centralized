@@ -2,7 +2,8 @@ import Service from '@ember/service';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
-
+import { set } from '@ember/object';
+import { computed } from '@ember/object';
 export default class AddonManagerService extends Service {
     @addonDocsConfig config; 
     @service router;
@@ -18,6 +19,7 @@ export default class AddonManagerService extends Service {
         });
     }
     
+    @computed('currentProjectName')
     get currentProject(){
         return this.config.projects[this.currentProjectName];
     }
@@ -27,6 +29,6 @@ export default class AddonManagerService extends Service {
     }
     
     setCurrentProject(currentProjectName){
-        this.currentProjectName = currentProjectName;
+        set(this,"currentProjectName", currentProjectName);
     }
 }

@@ -71,7 +71,7 @@ module.exports = {
       addonName = removeScope(addonName);
       let pkg = require(path.join(addonPath, 'package.json'));
       let repo = pkg.repository;
-      let info = require('hosted-git-info').fromUrl(repo.url || repo);
+      // let info = require('hosted-git-info').fromUrl(repo.url || repo);
 
       let addonPathInRepo = path.relative(
         this._getRepoRoot(),
@@ -83,7 +83,7 @@ module.exports = {
         projectDisplayName: dedasherize(addonName),
         projectDescription: pkg.description,
         projectTag: pkg.version,
-        projectHref: info && info.browse(),
+        projectHref: repo.url,
         docsAppPathInRepo,
         addonPathInRepo,
         primaryBranch: userConfig.getPrimaryBranch(),

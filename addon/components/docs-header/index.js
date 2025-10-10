@@ -33,6 +33,9 @@ export default class DocsHeader extends Component {
   
   @alias('addonManager.hostProjectInfo')
   hostProjectInfo;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   @tracked query;
 
