@@ -96,16 +96,21 @@ export default class DocsSearch extends Service {
 
   @enqueueTask
   *_loadSearchIndex() {
-    if (!this._searchIndex) {
-      let response = yield fetch(this._indexURL);
-      let json = yield response.json();
-
-      this._searchIndex = {
-        index: Index.load(json.index),
-        documents: json.documents,
-      };
+    
+    if(this._searchIndex){
+      if(Object.keys(this._searchIndex.documents)[0].includes(this.currentProject.projectName)){
+        return this._searchIndex; 
+      }
     }
+    
+    let response = yield fetch(this._indexURL);
+    let json = yield response.json();
 
+    this._searchIndex = {
+      index: Index.load(json.index),
+      documents: json.documents,
+    };
+    
     return this._searchIndex;
   }
 
