@@ -58,6 +58,12 @@ Router.map(function () {
   })
   this.route('ember-echarts', function(){
     apiRoute(this);
+    
+    this.route('components', function(){
+      this.route('category-map');
+      this.route('bar-chart');
+      this.route('donut-chart');
+    })
   })
   
   this.route('ember-tether', function(){
