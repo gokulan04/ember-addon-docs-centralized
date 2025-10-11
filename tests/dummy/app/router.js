@@ -41,12 +41,10 @@ Router.map(function () {
   
   this.route('ember-cli-clipboard', function () { // project added for test
     apiRoute(this);
-    docsRoute(this, function () {
-      this.route('one', function () {
-        this.route('child');
-      });
-      this.route('two');
+    this.route('one', function () {
+      this.route('child');
     });
+    this.route('two');
   });
   
   this.route('droid-simple-tree', function(){
