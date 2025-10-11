@@ -320,8 +320,8 @@ module.exports = {
 
   let ContentExtractor = require('./lib/preprocessors/hbs-content-extractor');
   let appTree = this._treeFor('app');
-  const contentExtractor = new ContentExtractor(this.getBroccoliBridge());
-  contentExtractor.toTree(appTree);
+  // Narrow it down to just the pods folder
+  let podsTree = new Funnel(appTree, { srcDir: 'pods/'});
 
   let PluginRegistry = require('./lib/models/plugin-registry');
   let DocsCompiler = require('./lib/broccoli/docs-compiler');
@@ -346,19 +346,23 @@ module.exports = {
 
     let docsGenerators = pluginRegistry.createDocsGenerators(addonSourceTree, {
       destDir: 'docs',
-      project: addon,
+      project,
       parentAddon: { name: addonName, root: addon.root },
     });
 
     let docsTree = new DocsCompiler(docsGenerators, {
       name: addonName,
-      project: addon,
+      project,
     });
 
     docsTrees.push(docsTree);
 
+    const contentExtractor = new ContentExtractor(this.getBroccoliBridge(), `template-contents-${addonName}`);
+    let addonPodsTree = new Funnel(podsTree,{srcDir:`${addonName}/`});
+    contentExtractor.toTree(addonPodsTree);
+    
     // Each addon gets its own search index file
-    let templateContentsTree = this.getBroccoliBridge().placeholderFor('template-contents');
+    let templateContentsTree = this.getBroccoliBridge().placeholderFor(`template-contents-${addonName}`);
     let searchIndexTree = new SearchIndexer(
       new MergeTrees([docsTree, templateContentsTree], {
         annotation: `SearchIndexer for ${addonName}`,
