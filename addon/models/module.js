@@ -26,6 +26,6 @@ export default class Module extends Model {
     Possible refactoring is to always link by actual ID, and implement redirects.
   */
   get routingId() {
-    return `modules/${this.id}`;
+    return `${this.id}`;
   }
 }

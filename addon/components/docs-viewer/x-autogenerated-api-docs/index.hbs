@@ -8,7 +8,7 @@
       <DocsViewer::XNavItem
         @label={{break-on item.name "/"}}
         @route={{concat @root ".api.item"}}
-        @model={{item.path}}
+        @model={{item.id}}   {{!--  module's id used for routing  --}}
       />
     {{/each}}
   {{/each}}
