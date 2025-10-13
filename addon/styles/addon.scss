@@ -139,3 +139,91 @@ table {
   background: #f5f5f5;
 }
 
+
+// ------------- OVERRIDING STYLE
+
+/* FONTS IMPORT  */
+
+// @font-face {
+//     font-family: 'open-sans-regular';
+//     src: url('../fonts/open-sans/open-sans-regular/OpenSansRegular.eot');
+//     src: url('../fonts/open-sans/open-sans-regular/OpenSansRegular.eot?#iefix') format('embedded-opentype'), url('../fonts/open-sans/open-sans-regular/OpenSansRegular.svg#OpenSansRegular') format('svg');
+//     font-weight: normal;
+//     font-style: normal;
+// }
+
+// @font-face {
+//     font-family: 'poppins-regular';
+//     src: url('../fonts/Poppins/Poppins-Regular.ttf') format('truetype');
+//     font-weight: normal;
+//     font-style: normal;
+// }
+
+body{
+    // font-family: open-sans-regular, Arial, sans-serif;
+}
+
+h1, h2, h3 {
+//  font-family: poppins-regular, Arial, Helvetica, sans-serif;
+}
+
+
+
+/* ------------- OVERRIDING ADDON DOCS STYLES -------------------- */
+
+:root {
+  --brand-primary: #04293c;
+  font-size: 13px;
+}
+
+.docs-font-title {
+    font-family: inherit;
+}
+
+.ad-docs-hero.docs-bg-brand {
+    background: linear-gradient(to bottom, hsl(200, 87%, 20%), hsl(200, 90%, 12%));
+}
+
+.AddonDocs-DocsViewer-Nav {
+    background: linear-gradient(to bottom, hsl(200, 87%, 20%), hsl(200, 90%, 12%));
+    color: white;
+}
+
+.AddonDocs-DocsViewer-Nav [data-test-id="nav-item"] {
+    color: #ccd4db;
+}
+
+.AddonDocs-DocsViewer-Nav [data-test-id="nav-item"].docs-text-brand {
+    color: #86a7c5;
+}
+
+.AddonDocs-DocsViewer-Nav .md\:docs-overflow-y-scroll{
+    overflow-y: auto;  /* overriden default class */
+}
+
+@media (min-width: 1400px) {
+  .AddonDocs-DocsViewer-Nav {
+      width: 250px;
+      padding-left: 0px;
+  }
+}
+
+.home-page-overview {
+    padding: 20px;
+}
+
+.docs-relative[data-search-box]{
+  /* display: none; */
+}
+
+.simple-tree-demo-wrapper {
+    margin: 15px;
+}
+
+header.docs-z-40 + .ember-view{ /* container overflow issue when version dropdown opened */
+    flex: none;
+}
+
+header .docs-max-w-site-container{
+    max-width: none;
+}
