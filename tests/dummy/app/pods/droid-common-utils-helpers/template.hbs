@@ -1,0 +1,11 @@
+<DocsViewer as |viewer|>
+  <viewer.nav @project={{this.model}} @root="droid-common-utils-helpers" as |nav|>
+    <nav.section @label="Common util helpers" />
+    <nav.item @label="Welcome" @route="droid-common-utils-helpers.index" />
+  </viewer.nav>
+
+  <viewer.main>
+    {{outlet}}
+  </viewer.main>
+
+</DocsViewer>

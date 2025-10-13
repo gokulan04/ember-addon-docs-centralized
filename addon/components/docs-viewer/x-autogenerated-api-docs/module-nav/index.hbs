@@ -13,7 +13,7 @@
       <subnav.item
         @label={{child.name}}
         @route={{concat @root ".api.item"}}
-        @model={{concat "modules/" child.id}}
+        @model={{concat child.id}}
       />
     {{/if}}
   {{/each}}

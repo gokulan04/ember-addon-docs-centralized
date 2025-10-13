@@ -1,8 +1,14 @@
 import Component from '@glimmer/component';
 import { cached } from 'tracked-toolbox';
-import { bool } from '@ember/object/computed';
+import { alias, bool } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 
-export default class DocsHeaderSearchResult extends Component {
+export default class DocsHeaderSearchResult extends Component {  
+  @service addonManager;
+  
+  @alias("addonManager.currentProject")
+  currentProject;
+  
   get linkArgs() {
     let type = this.args.result.document.type;
     if (type === 'template') {
@@ -12,7 +18,7 @@ export default class DocsHeaderSearchResult extends Component {
       };
     } else {
       return {
-        route: 'docs.api.item',
+        route: this.currentProject.projectName + '.api.item',
         models: [this.args.result.model.routingId],
       };
     }

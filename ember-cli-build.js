@@ -29,20 +29,11 @@ module.exports = function (defaults) {
     },
 
     'ember-cli-addon-docs': {
-      projects: {
-        sandbox: new MergeTrees([
-          new Funnel('sandbox/app', { destDir: 'sandbox' }),
-          new Funnel('sandbox', {
-            include: ['package.json', 'README.md'],
-          }),
-        ]),
-        "ember-cli-clipboard": new MergeTrees([  // project added for test 
-          new Funnel('node_modules/ember-cli-clipboard/addon', { destDir: 'ember-cli-clipboard' }),
-          new Funnel('node_modules/ember-cli-clipboard', {
-            include: ['package.json', 'README.md'],
-          }),
-        ])
-      },
+      documentingAddonsAt: ['node_modules/ember-cli-clipboard', 
+                            'node_modules/@admindroid/droid-simple-tree', 
+                            'node_modules/@admindroid/ember-echarts', 
+                            'node_modules/@admindroid/droid-common-utils-helpers',
+                            'node_modules/ember-tether']
     },
     postcssOptions: {
       compile: {

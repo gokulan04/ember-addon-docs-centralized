@@ -3,8 +3,7 @@ import { task } from 'ember-concurrency';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { formElementHasFocus } from 'ember-cli-addon-docs/keyboard-config';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
-
+import { alias } from '@ember/object/computed';
 export default class DocsHeaderSearchBox extends Component {
   @service store;
 
@@ -14,7 +13,10 @@ export default class DocsHeaderSearchBox extends Component {
     this.fetchProject.perform();
   }
 
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   // TODO: The searchbox doesn't work without the project being fetched.
   // We should move this logic (and everywhere else in the code that's fetching
@@ -23,7 +25,7 @@ export default class DocsHeaderSearchBox extends Component {
   // project.
   @task
   *fetchProject() {
-    yield this.store.findRecord('project', this.config.projectName);
+    yield this.store.findRecord('project', this.currentProject.projectName);
   }
 
   @action

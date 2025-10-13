@@ -1,12 +1,15 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { or } from '@ember/object/computed';
+import { alias, or } from '@ember/object/computed';
 import { capitalize } from '@ember/string';
 import { memberFilter } from '../../../utils/computed';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
+import { inject as service } from '@ember/service';
 
 export default class XClass extends Component {
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   @tracked showInherited = false;
   @tracked showProtected = false;

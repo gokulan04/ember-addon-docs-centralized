@@ -1,16 +1,21 @@
 import Service from '@ember/service';
 import lunr from 'lunr';
 import { enqueueTask } from 'ember-concurrency';
+import { inject as service } from '@ember/service';
 import {
-  getAddonDocsConfig,
-  getRootURL,
+  getRootURL
 } from 'ember-cli-addon-docs/-private/config';
-
+import { alias } from '@ember/object/computed';
 const { Index, Query } = lunr;
 
 export default class DocsSearch extends Service {
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
+  
   async search(phrase) {
-    const { searchTokenSeparator } = getAddonDocsConfig(this);
+    const { searchTokenSeparator } = this.currentProject;
     let { index, documents } = await this.loadSearchIndex();
     let words = phrase.toLowerCase().split(new RegExp(searchTokenSeparator));
     let results = index.query((query) => {
@@ -91,21 +96,26 @@ export default class DocsSearch extends Service {
 
   @enqueueTask
   *_loadSearchIndex() {
-    if (!this._searchIndex) {
-      let response = yield fetch(this._indexURL);
-      let json = yield response.json();
-
-      this._searchIndex = {
-        index: Index.load(json.index),
-        documents: json.documents,
-      };
+    
+    if(this._searchIndex){
+      if(Object.keys(this._searchIndex.documents)[0].includes(this.currentProject.projectName)){
+        return this._searchIndex; 
+      }
     }
+    
+    let response = yield fetch(this._indexURL);
+    let json = yield response.json();
 
+    this._searchIndex = {
+      index: Index.load(json.index),
+      documents: json.documents,
+    };
+    
     return this._searchIndex;
   }
 
   get _indexURL() {
-    return `${getRootURL(this)}ember-cli-addon-docs/search-index.json`;
+    return `${getRootURL(this)}ember-cli-addon-docs/search-index-${this.currentProject.projectName}.json`;
   }
 }
 

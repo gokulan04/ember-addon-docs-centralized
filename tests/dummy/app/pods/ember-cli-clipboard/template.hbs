@@ -1,10 +1,9 @@
 <DocsViewer as |viewer|>
-  {{log "model --> " this.model}}
   <viewer.nav @project={{this.model}} @root="ember-cli-clipboard" as |nav|>
     <nav.section @label="The ClipBoard" />
     <nav.item @label="Welcome" @route="ember-cli-clipboard.index" />
-    <nav.item @label="One" @route="ember-cli-clipboard.docs.one" />
-    <nav.item @label="Two" @route="ember-cli-clipboard.docs.two" />
+    {{!-- <nav.item @label="One" @route="ember-cli-clipboard.docs.one" /> --}}
+    <nav.item @label="Two" @route="ember-cli-clipboard.two" />
   </viewer.nav>
 
   <viewer.main>

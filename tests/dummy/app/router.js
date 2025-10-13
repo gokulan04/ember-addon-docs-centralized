@@ -41,13 +41,34 @@ Router.map(function () {
   
   this.route('ember-cli-clipboard', function () { // project added for test
     apiRoute(this);
-    docsRoute(this, function () {
-      this.route('one', function () {
-        this.route('child');
-      });
-      this.route('two');
+    this.route('one', function () {
+      this.route('child');
     });
+    this.route('two');
   });
+  
+  this.route('droid-simple-tree', function(){
+    apiRoute(this);
+    this.route('intro', function() {
+      
+    });
+  })
+  this.route('droid-common-utils-helpers', function(){
+    apiRoute(this);
+  })
+  this.route('ember-echarts', function(){
+    apiRoute(this);
+    
+    this.route('components', function(){
+      this.route('category-map');
+      this.route('bar-chart');
+      this.route('donut-chart');
+    })
+  })
+  
+  this.route('ember-tether', function(){
+    apiRoute(this);
+  })
 
   this.route('not-found', { path: '/*path' });
 });

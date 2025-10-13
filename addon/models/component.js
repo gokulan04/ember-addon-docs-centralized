@@ -88,6 +88,7 @@ export default class Component extends Class {
     Possible refactoring is to always link by actual ID, and implement redirects.
   */
   get routingId() {
-    return `components/${dasherize(this.name)}`;
+    let id = this.id.split("~")[0];
+    return `${id}`;
   }
 }

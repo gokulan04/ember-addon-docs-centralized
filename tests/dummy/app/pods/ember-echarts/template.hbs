@@ -1,0 +1,15 @@
+<DocsViewer as |viewer|>
+  <viewer.nav @project={{this.model}} @root="ember-echarts" as |nav|>
+    <nav.section @label="Ember Echarts" />
+    <nav.item @label="Welcome" @route="ember-echarts.index" />
+    <nav.section @label="Components" />
+    <nav.item @label="Category map" @route="ember-echarts.components.category-map" />
+    <nav.item @label="Bar Chart" @route="ember-echarts.components.bar-chart" />
+    <nav.item @label="Donut Chart" @route="ember-echarts.components.donut-chart" />
+  </viewer.nav>
+
+  <viewer.main>
+    {{outlet}}
+  </viewer.main>
+
+</DocsViewer>

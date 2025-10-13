@@ -2,14 +2,17 @@ import Service from '@ember/service';
 import { task } from 'ember-concurrency';
 import { tracked } from '@glimmer/tracking';
 import {
-  addonDocsConfig,
-  getRootURL,
+  getRootURL
 } from 'ember-cli-addon-docs/-private/config';
-
+import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 export default class ProjectVersionService extends Service {
   @tracked versions;
 
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   @task
   *_loadAvailableVersions() {
@@ -19,7 +22,7 @@ export default class ProjectVersionService extends Service {
       json = yield response.json();
     } else {
       json = {
-        [this.config.latestVersionName]: Object.assign({}, this.currentVersion),
+        [this.currentProject.latestVersionName]: Object.assign({}, this.currentVersion),
       };
     }
 
@@ -49,14 +52,14 @@ export default class ProjectVersionService extends Service {
       return this._currentVersion;
     }
 
-    let currentVersion = this.config.deployVersion;
+    let currentVersion = this.currentProject.deployVersion;
 
     // In development, this token won't have been replaced replaced
     if (currentVersion === 'ADDON_DOCS_DEPLOY_VERSION') {
       currentVersion = {
-        key: this.config.latestVersionName,
-        name: this.config.latestVersionName,
-        tag: this.config.projectTag,
+        key: this.currentProject.latestVersionName,
+        name: this.currentProject.latestVersionName,
+        tag: this.currentProject.projectTag,
         path: '',
         sha: 'abcde',
       };

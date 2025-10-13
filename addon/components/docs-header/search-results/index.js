@@ -4,8 +4,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { keyResponder, onKey } from 'ember-keyboard';
 import { restartableTask } from 'ember-concurrency';
-import { addonDocsConfig } from 'ember-cli-addon-docs/-private/config';
-
+import { alias } from '@ember/object/computed';
 @keyResponder
 export default class DocsHeaderSearchResults extends Component {
   @service docsSearch;
@@ -15,7 +14,10 @@ export default class DocsHeaderSearchResults extends Component {
   @tracked selectedIndex = null;
   @tracked rawSearchResults = [];
 
-  @addonDocsConfig config;
+  @service addonManager;
+  
+  @alias('addonManager.currentProject')
+  currentProject;
 
   constructor() {
     super(...arguments);
@@ -25,7 +27,7 @@ export default class DocsHeaderSearchResults extends Component {
   }
 
   get project() {
-    return this.store.peekRecord('project', this.config.projectName);
+    return this.store.peekRecord('project', this.currentProject.projectName);
   }
 
   get trimmedQuery() {
@@ -78,18 +80,16 @@ export default class DocsHeaderSearchResults extends Component {
 
           // Filter out modules that are not in the navigationIndex
           .filter(({ document }) => {
-            if (document.type === 'module') {
-              let navigableModules = this.project.navigationIndex.find(
-                (section) => section.type === 'modules',
-              );
-              let navigableModuleIds = navigableModules
-                ? navigableModules.items.map((item) => item.id)
-                : [];
+            if (document.type !== 'module') return true;
 
-              return navigableModuleIds.includes(document.title);
-            } else {
-              return true;
-            }
+            // Collect all module-like navigation sections in one pass
+            const moduleTypes = new Set(['modules', 'services', 'helpers']);
+            
+            const navigableModuleIds = this.project.navigationIndex
+              .filter(section => moduleTypes.has(section.type))
+              .flatMap(section => section.items.map(item => item.id));
+
+            return navigableModuleIds.includes(document.title);
           })
 
           // Add a reference to the Ember Data model to each API item search result

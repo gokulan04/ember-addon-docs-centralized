@@ -1,7 +1,7 @@
 <div class="dropdown">
   <!-- Dropdown button -->
   <button type="button" class="docs-flex docs-items-center" {{on "click" this.toggle}} {{did-insert this.attachTargetAttrib}}>
-    {{if this.selected this.selected.name "Select Addon"}} {{svg-jar "caret" height=12 width=12 class="docs-ml-auto"}}
+    {{if this.selected this.selected.projectDisplayName "Select Addon"}} {{svg-jar "caret" height=12 width=12 class="docs-ml-auto"}}
   </button>
 
   <!-- Dropdown list -->
@@ -16,11 +16,10 @@
         >
         <div class="dropdown">
             <ul class="docs-bg-white docs-shadow-md">
-                {{log "options --> " this.args.options}}
-            {{#each this.args.options as |opt|}}
+            {{#each this.options as |opt|}}
                 <li {{on "click" (fn this.selectItem opt)}}>
-                <DocsHeader::Link @route={{opt.value}}>
-                        {{opt.name}}
+                <DocsHeader::Link @route={{opt.projectName}}>
+                        {{opt.projectDisplayName}}
                     </DocsHeader::Link>
                 </li>
             {{/each}}
