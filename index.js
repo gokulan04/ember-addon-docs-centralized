@@ -423,8 +423,10 @@ module.exports = {
         });
       } else {
         this._cachedDocumentingAddonAt = null;
+        throw new Error(
+          `No documenting addons were mentioned in ember-cli-build`
+        );
       }
-    }
     return this._cachedDocumentingAddonAt;
   },
 
