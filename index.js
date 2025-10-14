@@ -428,6 +428,7 @@ module.exports = {
         );
       }
     return this._cachedDocumentingAddonAt;
+    }
   },
 
   // returns path of the addon source code relative to the addon root folder.
