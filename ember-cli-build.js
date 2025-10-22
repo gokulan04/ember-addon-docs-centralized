@@ -29,11 +29,7 @@ module.exports = function (defaults) {
     },
 
     'ember-cli-addon-docs': {
-      documentingAddonsAt: ['node_modules/ember-cli-clipboard', 
-                            'node_modules/@admindroid/droid-simple-tree', 
-                            'node_modules/@admindroid/ember-echarts', 
-                            'node_modules/@admindroid/droid-common-utils-helpers',
-                            'node_modules/ember-tether']
+      documentingAddonsAt: ['node_modules/ember-cli-clipboard']
     },
     postcssOptions: {
       compile: {
