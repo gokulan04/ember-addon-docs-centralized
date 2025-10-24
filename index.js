@@ -427,8 +427,8 @@ module.exports = {
           `No documenting addons were mentioned in ember-cli-build`
         );
       }
-    return this._cachedDocumentingAddonAt;
     }
+    return this._cachedDocumentingAddonAt;
   },
 
   // returns path of the addon source code relative to the addon root folder.
