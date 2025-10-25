@@ -161,13 +161,13 @@ module.exports = {
     includer.options.includeFileExtensionInSnippetNames =
       includer.options.includeFileExtensionInSnippetNames || false;
     if (!includer.options.snippetSearchPaths) {
-      if (this._documentingAddonAt()) {
+      // if (this._documentingAddonAt()) {
         // we are a standalone app, so our code is here
-        includer.options.snippetSearchPaths = ['app'];
-      } else {
+        // includer.options.snippetSearchPaths = ['app'];
+      // } else {
         // we are inside the addon, so our code is here
-        includer.options.snippetSearchPaths = ['tests/dummy/app'];
-      }
+        includer.options.snippetSearchPaths = ['tests/dummy/app']; // always points to this folder as we always refers documenting addons
+      // }
     }
 
     if (!includer.options.snippetRegexes) {
