@@ -24,22 +24,22 @@
 
       <DocsHeader::SearchBox @query={{this.query}} @onInput={{set this "query"}} />
 
-      {{!-- <DocsHeader::Link @onClick={{toggle "isShowingVersionSelector" this}}>
+      <DocsHeader::Link>
         <span data-test-id="current-version" data-version-selector class="docs-flex docs-items-center">
 
-          {{#if (eq this.currentVersion.key this.config.latestVersionName)}}
+          {{!-- {{#if (eq this.currentVersion.key this.config.latestVersionName)}}
             {{#if this.currentVersion.tag}}
               {{this.currentVersion.tag}}
-            {{else}}
-              Latest
-            {{/if}}
-          {{else}}
-            {{this.currentVersion.name}}
-          {{/if}}
+            {{else}} --}}
+              {{!-- Latest --}}
+            {{!-- {{/if}}
+          {{else}} --}}
+            {{concat "v " this.hostProjectInfo.version}}
+          {{!-- {{/if}} --}}
 
-          {{svg-jar "caret" height=12 width=12}}
+          {{!-- {{svg-jar "caret" height=12 width=12}} --}}
         </span>
-      </DocsHeader::Link> --}}
+      </DocsHeader::Link>
 
         <DocsHeader::Link @href={{this.currentProject.projectHref}}>
           {{#if this.currentProject.projectHref}}
